@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pan Roman – Master of Many Paths</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    color: #33ff33;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.6;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  #header {
+    width: 100%;
+    max-width: 860px;
+    padding: 12px 24px 6px;
+    color: #888;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  #terminal {
+    width: 100%;
+    max-width: 860px;
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    outline: none;
+  }
+
+  #terminal::-webkit-scrollbar { width: 6px; }
+  #terminal::-webkit-scrollbar-track { background: #0d0d0d; }
+  #terminal::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+  #output { display: inline; }
+
+  #cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1em;
+    background: #33ff33;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 1px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  #hint {
+    position: fixed;
+    top: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #2a5a2a;
+    font-size: 24px;
+    pointer-events: none;
+    transition: opacity 1s;
+  }
+
+  #hint.hidden { opacity: 0; }
+
+  .dim { color: #1e6e1e; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <span>roman@terminal ~ % poem</span>
+  <span id="counter">0 / 0</span>
+</div>
+
+<div id="terminal" tabindex="0">
+  <span id="output"></span><span id="cursor"></span>
+</div>
+
+<div id="hint">— press any key to begin typing —</div>
+
+<script>
+const poem = `Pan Roman – Master of Many Paths
+
+In halls of servers, clouds, and code,
+Where countless digital rivers flowed,
+There stands a man both calm and bright,
+Pan Roman, guiding day and night.
+
+A DevOps master, sharp and wise,
+Who sees solutions where challenge lies,
+Bridging teams and systems wide,
+With steady hands and patient stride.
+
+When projects wander, lose their way,
+He brings clear purpose to the day.
+A Project Manager strong and true,
+Turning plans into work that grew.
+
+In infrastructure's vast domain,
+He builds foundations that remain.
+Networks, platforms, tools, and more,
+Reliable as a mountain shore.
+
+Yet knowledge never stands still long,
+For learning is where he belongs.
+New technologies appear each year,
+And Pan Roman meets them without fear.
+
+A fast learner with curious mind,
+Always seeking what he can find.
+Reading, testing, asking why,
+Reaching ever toward the sky.
+
+As Agile Coach, he helps teams thrive,
+Keeping collaboration alive.
+Not by command, nor forceful voice,
+But helping people make the choice.
+
+He listens well, respects each view,
+And helps good ideas break through.
+Encouraging trust, inspiring growth,
+Uniting teams and strengthening both.
+
+When deadlines press and tensions rise,
+He keeps a clear and balanced eye.
+Through obstacles, risks, and changing plans,
+Success emerges from his hands.
+
+A team player through and through,
+Ready to help, support, and do.
+Sharing knowledge, lending time,
+Making collective efforts shine.
+
+So here's a tribute, earned with grace,
+To one who elevates every place.
+A leader, builder, mentor, friend,
+On whom colleagues can always depend.
+
+May every challenge yet to come
+Be met and mastered by Pan Roman.
+For excellence follows where he leads,
+Turning ambitions into deeds.`;
+
+const output   = document.getElementById('output');
+const counter  = document.getElementById('counter');
+const hint     = document.getElementById('hint');
+const terminal = document.getElementById('terminal');
+
+let pos        = 0;
+let started    = false;
+let cycleCount = 0;
+
+counter.textContent = `0 / ${poem.length}`;
+
+function renderChar(ch) {
+  // Newlines become actual line breaks; everything else is a text node
+  if (ch === '\n') {
+    output.appendChild(document.createElement('br'));
+  } else {
+    output.appendChild(document.createTextNode(ch));
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  // Ignore modifier-only keys and function keys
+  if (e.key.length > 1 && !['Enter', 'Space'].includes(e.key)) return;
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+  if (!started) {
+    started = true;
+    hint.classList.add('hidden');
+  }
+
+  const ch = poem[pos];
+  renderChar(ch);
+
+  pos++;
+  counter.textContent = `${pos} / ${poem.length}`;
+
+  // Loop
+  if (pos >= poem.length) {
+    pos = 0;
+    cycleCount++;
+    // Visual separator between cycles
+    const sep = document.createTextNode('\n\n');
+    output.appendChild(sep);
+    output.appendChild(document.createElement('br'));
+    output.appendChild(document.createElement('br'));
+  }
+
+  // Auto-scroll to keep cursor visible
+  terminal.scrollTop = terminal.scrollHeight;
+});
+
+// Focus terminal so it feels immersive
+terminal.focus();
+</script>
+</body>
+</html>
