@@ -1,5 +1,3 @@
 # Pan Roman
 
-website contains website code and Docker
-
-Terraform contains Infrastructure
+Contains website code and Docker
