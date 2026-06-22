@@ -1,9 +1,9 @@
 services:
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     ports:
       - "80:80"
     volumes:
-      - ./frontend:/usr/share/nginx/html
+      - ./content:/usr/share/nginx/html
